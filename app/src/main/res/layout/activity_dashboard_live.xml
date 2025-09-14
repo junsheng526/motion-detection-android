@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/background_color"
+        android:title="Admin"
+        android:titleTextColor="@color/text_black" />
+
+    <!-- Toggle buttons -->
+    <LinearLayout
+        android:id="@+id/toggleContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/toggle_background"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/dashboardTab"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/toggle_selected"
+            android:gravity="center"
+            android:paddingHorizontal="24dp"
+            android:text="Dashboard"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/liveTab"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/toggle_unselected"
+            android:gravity="center"
+            android:paddingHorizontal="24dp"
+            android:text="Live"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/analyticTab"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/toggle_unselected"
+            android:gravity="center"
+            android:paddingHorizontal="24dp"
+            android:text="Analytics"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/backgroundCameraPreview"
+        android:layout_width="360dp"
+        android:layout_height="480dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        tools:visibility="gone" />
+    <!-- Content container -->
+    <FrameLayout
+        android:id="@+id/tabContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

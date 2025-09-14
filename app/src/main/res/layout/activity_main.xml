@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@color/background_color">
+
+    <TextView
+        android:id="@+id/Appname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="App Name"
+        android:textColor="#333333"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <!-- Logo -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/logoImage"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/logo_example"
+        android:scaleType="centerCrop"
+        android:contentDescription="Logo"
+        app:shapeAppearanceOverlay="@style/CircleImageShape"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Admin Button -->
+    <Button
+        android:id="@+id/adminButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Admin"
+        android:backgroundTint="@color/button_color"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp" />
+
+    <!-- User Button -->
+    <Button
+        android:id="@+id/userButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="User"
+        android:backgroundTint="@color/button_color"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>

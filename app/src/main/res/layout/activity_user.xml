@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/background_color"
+        android:title="User"
+        android:titleTextColor="@color/text_black" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/listofROI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="List of ROI"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- The list of ROI names -->
+    <ListView
+        android:id="@+id/listViewRoi"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#CCCCCC"
+        android:dividerHeight="1dp"
+        android:background="#FFFFFF" />
+
+    <!-- Confirm button at the bottom -->
+    <Button
+        android:id="@+id/btnConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/button_color"
+        android:textColor="#FFFFFF"/>
+</LinearLayout>

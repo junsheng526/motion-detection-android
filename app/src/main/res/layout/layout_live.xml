@@ -1,0 +1,131 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F2F2F2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
+
+        <!-- Camera Preview Frame -->
+        <FrameLayout
+            android:id="@+id/previewFrame"
+            android:layout_width="360dp"
+            android:layout_height="480dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp">
+            <com.kiayee_motiondetectapplication.view.DrawLineROIView
+                android:id="@+id/lineroiview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+        </FrameLayout>
+
+        <!-- Dashboard Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginHorizontal="8dp"
+            android:elevation="2dp"
+            android:gravity="center_horizontal"
+            android:clipToOutline="true"
+            android:backgroundTint="#E5E5E5"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_card_bg">
+
+            <!-- Status: Crowded or Normal -->
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/Normal_text"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Number of visitors -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/visitorInArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No of visitors in (name)"
+                    android:textSize="18sp"
+                    android:textColor="#222222" />
+
+                <TextView
+                    android:id="@+id/numberVisitorInArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="20sp"
+                    android:textColor="#7D3CF8"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
+            <!-- Average dwell time -->
+                <TextView
+                    android:id="@+id/dwelltimetext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Average dwell time"
+                    android:textSize="10sp"
+                    android:textColor="@color/Normal_text"
+                    android:layout_marginLeft="8dp"/>
+            <TextView
+                android:id="@+id/dwellTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/Normal_text"
+                android:layout_marginLeft="10dp" />
+            </LinearLayout>
+            <!-- Total number -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total No"
+                    android:textSize="20sp"
+                    android:textColor="#222222"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="22sp"
+                    android:textColor="#7D3CF8"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

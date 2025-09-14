@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/background_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
+
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/background_color"
+            android:title="Admin"
+            android:titleTextColor="@color/text_black" />
+
+        <!-- Camera Preview with 3:4 ratio -->
+        <FrameLayout
+            android:id="@+id/previewFrame"
+            android:layout_width="360dp"
+            android:layout_height="480dp"
+            android:layout_marginTop="0dp"
+            android:layout_gravity="center">
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/previewView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#222222" />
+            <com.kiayee_motiondetectapplication.view.DrawROIView
+                android:id="@+id/roiOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"/>
+        </FrameLayout>
+
+        <!-- Future Buttons -->
+        <Button
+            android:id="@+id/addROI"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add New ROI"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/button_color"
+            android:textColor="#FFFFFF" />
+        <!-- ListView for ROI Points -->
+        <ListView
+            android:id="@+id/listViewRoiPoints"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="16dp"
+            android:divider="#CCCCCC"
+            android:dividerHeight="1dp"
+            android:background="#FFFFFF" />
+
+
+        <!-- Add more buttons as needed -->
+
+    </LinearLayout>
+</ScrollView>

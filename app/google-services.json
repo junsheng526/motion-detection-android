@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11327775615",
+    "project_id": "motion-detection-4bece",
+    "storage_bucket": "motion-detection-4bece.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11327775615:android:5815e4a14e76898282f04a",
+        "android_client_info": {
+          "package_name": "com.kiayee_motiondetectapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE3nDZFm6h1A9y1JnKsIJWMwg4QKj4XVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
