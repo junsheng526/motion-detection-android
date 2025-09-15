@@ -34,6 +34,8 @@ import android.media.MediaPlayer
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -42,7 +44,16 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.components.XAxis
 import com.kiayee_motiondetectapplication.R
 import com.kiayee_motiondetectapplication.data.api.ApiRoutes
+import com.kiayee_motiondetectapplication.data.model.AnalyticRecord
+import com.kiayee_motiondetectapplication.data.model.DetectedPerson
+import com.kiayee_motiondetectapplication.data.model.SettingsPackage
+import com.kiayee_motiondetectapplication.data.model.TransformResult
 import com.kiayee_motiondetectapplication.utils.CameraConfig
+import com.kiayee_motiondetectapplication.viewmodel.AnalyticViewModel
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 class DashboardLiveActivity : AppCompatActivity() {
@@ -89,12 +100,6 @@ class DashboardLiveActivity : AppCompatActivity() {
     private var number_enter: TextView? = null
     private var number_out: TextView? = null
 
-    data class DetectedPerson(
-        val id: Int,
-        val box: IntArray,
-        val circle: IntArray
-    )
-
     private var lineroiOverlay: DrawLineROIView? = null
     private val inData = mutableListOf<Entry>()
     private val outData = mutableListOf<Entry>()
@@ -114,24 +119,20 @@ class DashboardLiveActivity : AppCompatActivity() {
     var inLine: List<PointF>? = null
     var outLine: List<PointF>? = null
 
-    data class SettingsPackage(
-        val roi: DefineROIActivity.ROI?,        // Your region of interest
-        val threshold: Int?,                  // Your threshold
-        val lines: DefineInoutActivity.InOutLines? // Your in/out lines
-    )
-
     var frameToSendWidth: Int = 0
     var frameToSendHeight: Int = 0
 
-    data class TransformResult(
-        val imageWidth: Float,
-        val imageHeight: Float,
-        val previewWidth: Float,
-        val previewHeight: Float,
-        val scale: Float,
-        val dx: Float,
-        val dy: Float
-    )
+    private val vm: AnalyticViewModel by viewModels()
+    private val seenIds = mutableSetOf<Int>()
+    private var lastSavedHour: String? = null
+
+    // Keep track of all unique detected IDs
+    private val uniquePersonIds = mutableSetOf<Int>()
+
+    // Track cumulative totals
+    private var cumulativeInCount = 0
+    private var cumulativeOutCount = 0
+    private var cumulativeTotalPeople = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -311,7 +312,6 @@ class DashboardLiveActivity : AppCompatActivity() {
         setupChart(roiChart, "People in ROI Over Time")
     }
 
-
     private fun initializeCameraProvider() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
@@ -319,7 +319,6 @@ class DashboardLiveActivity : AppCompatActivity() {
             bindPreviewAndStartSending()
         }, ContextCompat.getMainExecutor(this))
     }
-
 
     private fun bindPreviewAndStartSending() {
         if (cameraProvider == null) return
@@ -358,7 +357,6 @@ class DashboardLiveActivity : AppCompatActivity() {
             Log.e("CameraX", "Use case binding failed", e)
         }
     }
-
 
     private fun loadThreshold(): Int? {
         val prefs = getSharedPreferences("threshold_prefs", MODE_PRIVATE)
@@ -443,7 +441,6 @@ class DashboardLiveActivity : AppCompatActivity() {
     }
 
     private fun calculateImageToViewTransform(): TransformResult {
-
 
         val imageWidth = frameToSendWidth.toFloat()
         val imageHeight = frameToSendHeight.toFloat()
@@ -555,6 +552,27 @@ class DashboardLiveActivity : AppCompatActivity() {
         })
     }
 
+    private fun resolveDayDateHour(): Triple<String, String, String> {
+        // First pick mock or now
+        val cal = vm.mockDateTime.value ?: Calendar.getInstance()
+
+        // Try to resolve day, date, hour
+        val day = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.time)
+        val hour = cal.get(Calendar.HOUR_OF_DAY).toString()
+
+        // If day is null or "Unknown", fallback to system calendar
+        return if (day.isNullOrEmpty() || day == "Unknown") {
+            val now = Calendar.getInstance()
+            val fallbackDay = now.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) ?: "Unknown"
+            val fallbackDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(now.time)
+            val fallbackHour = now.get(Calendar.HOUR_OF_DAY).toString()
+            Triple(fallbackDay, fallbackDate, fallbackHour)
+        } else {
+            Triple(day, date, hour)
+        }
+    }
+
     private fun getResultFromPC() {
         val request = Request.Builder()
             .url(ApiRoutes.RECEIVE_RESULT)
@@ -592,7 +610,14 @@ class DashboardLiveActivity : AppCompatActivity() {
                                 IntArray(2) { circleArray.getInt(it) } else IntArray(2)
 
                             peopleList.add(DetectedPerson(id, box, circle))
-                            //Log.d("PeopleArray", "Person ID: $id, Box: ${box.contentToString()}, Circle: ${circle.contentToString()}")
+
+                            // ✅ Count only new unique IDs
+                            if (id != -1 && !uniquePersonIds.contains(id)) {
+                                uniquePersonIds.add(id)
+
+                                // Update cumulative counts
+                                cumulativeTotalPeople += 1
+                            }
                         }
                     }
 
@@ -600,9 +625,10 @@ class DashboardLiveActivity : AppCompatActivity() {
                         val boolstart: Boolean = json.optBoolean("bool_start")
                         if (boolstart) {
                             //total people
-                            val ttl_ppl = totalPeople.toString()
+                            val ttl_ppl = uniquePersonIds.size.toString()
                             l_totalNumTextView?.text = ttl_ppl
                             d_totalNumTextView?.text = ttl_ppl
+
                             //total people (roi)
                             val ttl_roi = totaiInROI.toString()
                             l_totalinROITextView?.text = ttl_roi
@@ -636,9 +662,13 @@ class DashboardLiveActivity : AppCompatActivity() {
                             l_crowdstatus?.text = statusText
                             l_crowdstatus?.setTextColor(statusColor)
 
-                            number_enter?.text = inlinecount.toString()
-                            number_out?.text = outlinecount.toString()
+                            // Add to totals instead of replacing
+                            cumulativeInCount += inlinecount
+                            cumulativeOutCount += outlinecount
 
+                            // Update UI with cumulative values
+                            number_enter?.text = cumulativeInCount.toString()
+                            number_out?.text = cumulativeOutCount.toString()
 
                             val transform = calculateImageToViewTransform()
                             val mappedPeopleList = peopleList.map { person ->
@@ -677,6 +707,38 @@ class DashboardLiveActivity : AppCompatActivity() {
                             if (isDashboardVisible) {
                                 updateChart(inOutChart, inData, outData, "In", "Out")
                                 updateChart(roiChart, roiData, null, "In ROI", null)
+                            }
+
+                            val record = AnalyticRecord(
+                                peopleCount = totalPeople,
+                                countInRoi = totaiInROI,
+                                inCount = inlinecount,
+                                outCount = outlinecount,
+                                averageDwell = avgdwell
+                            )
+
+                            val (day, date, hour) = resolveDayDateHour()
+
+                            // Track unique IDs
+                            for (person in peopleList) {
+                                if (person.id != -1) {
+                                    seenIds.add(person.id)
+                                }
+                            }
+
+                            // Reset if new hour starts
+                            if (lastSavedHour != hour) {
+                                seenIds.clear()
+                                lastSavedHour = hour
+                            }
+
+                            // Save record with stable unique count
+                            val recordWithUnique = record.copy(
+                                peopleCount = seenIds.size // replace fluctuating count
+                            )
+
+                            lifecycleScope.launch {
+                                vm.set(day, date, hour, recordWithUnique)
                             }
 
 
@@ -765,5 +827,4 @@ class DashboardLiveActivity : AppCompatActivity() {
             "$remainingSeconds second${if (remainingSeconds != 1) "s" else ""}"
         }
     }
-
 }

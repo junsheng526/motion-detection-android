@@ -27,10 +27,11 @@
             android:layout_weight="1" />
 
         <LinearLayout
-            android:background="@drawable/rounded_bg"
-            android:padding="12dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_bg"
+            android:padding="12dp">
+
             <Spinner
                 android:id="@+id/daySelector"
                 android:layout_width="wrap_content"
@@ -44,5 +45,61 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date Time Mocking (Demo Purpose)"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPickDate"
+                android:background="@drawable/rounded_bg"
+                android:padding="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick Date" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPickTime"
+                android:background="@drawable/rounded_bg"
+                android:padding="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Pick Time" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSaveMock"
+                android:background="@drawable/rounded_bg"
+                android:padding="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Save Mock" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvSelectedDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="No date/time selected" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

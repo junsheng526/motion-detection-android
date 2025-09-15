@@ -6,7 +6,7 @@
     <solid android:color="@color/cardview_light_background" />
 
     <!-- Corner radius -->
-    <corners android:radius="20dp" />
+    <corners android:radius="24dp" />
 
     <!-- Optional: add padding inside the shape -->
     <padding

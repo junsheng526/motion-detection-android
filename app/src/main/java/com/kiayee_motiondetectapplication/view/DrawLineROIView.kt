@@ -4,13 +4,14 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import com.kiayee_motiondetectapplication.data.model.DetectedPerson
 
 class DrawLineROIView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private var roiPoints: DefineROIActivity.ROI? = null
     private var inLine: List<PointF>? = null
     private var outLine: List<PointF>? = null
-    private var people: List<DashboardLiveActivity.DetectedPerson> = emptyList()
+    private var people: List<DetectedPerson> = emptyList()
 
     private val roiPaint = Paint().apply {
         color = Color.GREEN
@@ -42,7 +43,7 @@ class DrawLineROIView(context: Context, attrs: AttributeSet) : View(context, att
         invalidate()
     }
 
-    fun updatePeople(people: List<DashboardLiveActivity.DetectedPerson>) {
+    fun updatePeople(people: List<DetectedPerson>) {
         this.people = people
         invalidate() // Triggers a redraw
     }
