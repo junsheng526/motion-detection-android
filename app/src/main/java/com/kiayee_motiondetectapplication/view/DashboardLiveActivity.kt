@@ -221,6 +221,8 @@ class DashboardLiveActivity : AppCompatActivity() {
 
         // ✅ Clear any existing views
         tabContainer.removeAllViews()
+        roiJson = intent.getStringExtra("selected_roi_json")
+        roiObj = roiJson?.let {gson.fromJson(it, DefineROIActivity.ROI::class.java) }// only keep the roi selected by user
 
         when (layoutId) {
             R.layout.layout_live -> {
@@ -564,7 +566,9 @@ class DashboardLiveActivity : AppCompatActivity() {
         // If day is null or "Unknown", fallback to system calendar
         return if (day.isNullOrEmpty() || day == "Unknown") {
             val now = Calendar.getInstance()
-            val fallbackDay = now.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) ?: "Unknown"
+            val fallbackDay =
+                now.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
+                    ?: "Unknown"
             val fallbackDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(now.time)
             val fallbackHour = now.get(Calendar.HOUR_OF_DAY).toString()
             Triple(fallbackDay, fallbackDate, fallbackHour)
@@ -625,10 +629,9 @@ class DashboardLiveActivity : AppCompatActivity() {
                         val boolstart: Boolean = json.optBoolean("bool_start")
                         if (boolstart) {
                             //total people
-                            val ttl_ppl = uniquePersonIds.size.toString()
+                            val ttl_ppl = totalPeople.toString()
                             l_totalNumTextView?.text = ttl_ppl
                             d_totalNumTextView?.text = ttl_ppl
-
                             //total people (roi)
                             val ttl_roi = totaiInROI.toString()
                             l_totalinROITextView?.text = ttl_roi
@@ -662,13 +665,9 @@ class DashboardLiveActivity : AppCompatActivity() {
                             l_crowdstatus?.text = statusText
                             l_crowdstatus?.setTextColor(statusColor)
 
-                            // Add to totals instead of replacing
-                            cumulativeInCount += inlinecount
-                            cumulativeOutCount += outlinecount
+                            number_enter?.text = inlinecount.toString()
+                            number_out?.text = outlinecount.toString()
 
-                            // Update UI with cumulative values
-                            number_enter?.text = cumulativeInCount.toString()
-                            number_out?.text = cumulativeOutCount.toString()
 
                             val transform = calculateImageToViewTransform()
                             val mappedPeopleList = peopleList.map { person ->
@@ -700,14 +699,25 @@ class DashboardLiveActivity : AppCompatActivity() {
                             roiData.add(Entry(elapsedSeconds, totaiInROI.toFloat()))
 
                             val isDashboardVisible =
-                                dashboardTab.background.constantState == resources.getDrawable(
-                                    R.drawable.toggle_selected
-                                ).constantState
+                                dashboardTab.background.constantState == resources.getDrawable(R.drawable.toggle_selected).constantState
 
                             if (isDashboardVisible) {
                                 updateChart(inOutChart, inData, outData, "In", "Out")
                                 updateChart(roiChart, roiData, null, "In ROI", null)
                             }
+
+
+
+                            if (peopleArray != null) {
+                                for (i in 0 until peopleArray.length()) {
+                                    val personObj = peopleArray.getJSONObject(i)
+                                    val id = personObj.optInt("id", -1)
+                                    if (id != -1 && !seenIds.contains(id)) {
+                                        seenIds.add(id)
+                                    }
+                                }
+                            }
+
 
                             val record = AnalyticRecord(
                                 peopleCount = totalPeople,
